@@ -8,7 +8,7 @@ export async function updateSession(request: NextRequest) {
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
@@ -33,15 +33,15 @@ export async function updateSession(request: NextRequest) {
   );
 
   const {
-    data: { claims },
-  } = await supabase.auth.getClaims();
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
 
   const isAdminRoute = pathname.startsWith("/admin");
   const isLoginPage = pathname === "/admin/login";
 
-  if (isAdminRoute && !isLoginPage && !claims) {
+  if (isAdminRoute && !isLoginPage && !user) {
     const loginUrl = request.nextUrl.clone();
 
     loginUrl.pathname = "/admin/login";
@@ -50,7 +50,7 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (isLoginPage && claims) {
+  if (isLoginPage && user) {
     const adminUrl = request.nextUrl.clone();
 
     adminUrl.pathname = "/admin";

@@ -1,4 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
+import type {
+  Puja,
+  Sanskar,
+  ShanthiService,
+  ShraddhService,
+  YagService,
+  VivahService,
+  MuhuratService,
+} from "@/types/database";
 
 export type ServiceCategory =
   | "puja"
@@ -19,9 +28,17 @@ const tableMap = {
   muhurat: "muhurat_services",
 } as const;
 
+type ServiceType =
+  | Puja
+  | Sanskar
+  | ShanthiService
+  | ShraddhService
+  | YagService
+  | VivahService
+  | MuhuratService;
+
 export async function getServices(category: ServiceCategory) {
   const supabase = await createClient();
-
   const table = tableMap[category];
 
   const { data, error } = await supabase
@@ -31,7 +48,7 @@ export async function getServices(category: ServiceCategory) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error loading services:", error);
+    console.error(`Error loading ${category} services:`, error);
     return [];
   }
 
@@ -41,9 +58,8 @@ export async function getServices(category: ServiceCategory) {
 export async function getServiceById(
   category: ServiceCategory,
   id: string
-) {
+): Promise<ServiceType | null> {
   const supabase = await createClient();
-
   const table = tableMap[category];
 
   const { data, error } = await supabase
@@ -54,7 +70,29 @@ export async function getServiceById(
     .maybeSingle();
 
   if (error) {
-    console.error("Error loading service:", error);
+    console.error(`Error loading ${category} service:`, error);
+    return null;
+  }
+
+  return data;
+}
+
+export async function getServiceBySlug(
+  category: ServiceCategory,
+  slug: string
+): Promise<ServiceType | null> {
+  const supabase = await createClient();
+  const table = tableMap[category];
+
+  const { data, error } = await supabase
+    .from(table)
+    .select("*")
+    .eq("slug", slug)
+    .eq("is_published", true)
+    .maybeSingle();
+
+  if (error) {
+    console.error(`Error loading ${category} service by slug:`, error);
     return null;
   }
 
