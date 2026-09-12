@@ -41,21 +41,27 @@ export default async function PujaPage() {
               <Link
                 key={service.id}
                 href={`/puja/${service.id}`}
-                className="group rounded-2xl border border-[#E8D8BD] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                className="spiritual-card group block p-6"
               >
-                <h2 className="text-xl font-bold text-[#7F1D1D]">
-                  {service.name_mr || service.name}
+                <h2 className="text-xl font-bold text-red-950">
+                  {service.title}
                 </h2>
 
                 {service.short_description && (
-                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">
+                  <p className="mt-3 line-clamp-3 text-sm leading-6 text-amber-950/65">
                     {service.short_description}
                   </p>
                 )}
 
-                <span className="mt-5 inline-block font-semibold text-[#B45309]">
+                {service.duration && (
+                  <p className="mt-3 text-sm font-medium text-amber-800">
+                    कालावधी: {service.duration}
+                  </p>
+                )}
+
+                <div className="mt-5 text-sm font-semibold text-amber-700">
                   अधिक माहिती →
-                </span>
+                </div>
               </Link>
             ))}
           </div>
