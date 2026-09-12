@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
   const supabase = await createClient();
 
@@ -12,53 +14,79 @@ export default async function AdminDashboard() {
     redirect("/admin/login");
   }
 
+  const { data: userRole } = await supabase
+    .from("user_roles")
+    .select(
+      `
+      roles (
+        name
+      )
+      `
+    )
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  const roleName =
+    (userRole?.roles as { name?: string } | null)?.name ?? null;
+
+  if (!["guruji", "admin", "handler"].includes(roleName ?? "")) {
+    redirect("/admin/login?error=unauthorized");
+  }
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("full_name, email")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
   return (
     <main className="min-h-screen bg-[#FFF9F0]">
       <div className="container-custom section-padding">
+
         <div className="mb-10">
-          <p className="text-sm text-[#B8860B] font-semibold">
+          <p className="text-sm font-semibold text-[#B8860B]">
             ADMIN PANEL
           </p>
 
-          <h1 className="text-4xl font-bold text-[#451A03] mt-2">
+          <h1 className="mt-2 text-4xl font-bold text-[#451A03]">
             नमस्कार, {profile?.full_name || "Guruji"} 🙏
           </h1>
 
-          <p className="text-gray-600 mt-2">
+          <p className="mt-2 text-gray-600">
             गुरुजी धार्मिक सेवा प्रशासन पॅनेल
           </p>
+
+          <div className="mt-3 inline-flex rounded-full bg-[#7F1D1D] px-4 py-1.5 text-sm font-semibold text-white">
+            Role: {roleName}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
           <DashboardCard
-            title="Puja"
-            value="Manage"
+            title="पूजा"
+            description="पूजा व्यवस्थापन"
             href="/admin/puja"
           />
 
           <DashboardCard
             title="Calendar"
-            value="Manage"
+            description="कार्यक्रम व दिनदर्शिका"
             href="/admin/calendar"
           />
 
           <DashboardCard
             title="Enquiries"
-            value="Manage"
+            description="चौकशी व्यवस्थापन"
             href="/admin/enquiries"
           />
 
           <DashboardCard
             title="Gallery"
-            value="Manage"
+            description="फोटो व्यवस्थापन"
             href="/admin/gallery"
           />
+
         </div>
       </div>
     </main>
@@ -67,23 +95,29 @@ export default async function AdminDashboard() {
 
 function DashboardCard({
   title,
-  value,
+  description,
   href,
 }: {
   title: string;
-  value: string;
+  description: string;
   href: string;
 }) {
   return (
     <a
       href={href}
-      className="spiritual-card p-6 block hover:-translate-y-1 transition"
+      className="block rounded-2xl border border-[#E8D8BD] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
     >
-      <p className="text-sm text-gray-500">{title}</p>
+      <h2 className="text-xl font-bold text-[#7F1D1D]">
+        {title}
+      </h2>
 
-      <p className="text-2xl font-bold text-[#7F1D1D] mt-2">
-        {value}
+      <p className="mt-2 text-sm text-gray-600">
+        {description}
       </p>
+
+      <span className="mt-5 inline-block text-sm font-semibold text-[#B45309]">
+        व्यवस्थापन →
+      </span>
     </a>
   );
 }
