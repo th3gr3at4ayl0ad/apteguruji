@@ -9,7 +9,7 @@ export type ServiceCategory =
   | "vivah"
   | "muhurat";
 
-const tableMap: Record<ServiceCategory, string> = {
+const tableMap = {
   puja: "pujas",
   sanskar: "sanskars",
   shanti: "shanti_services",
@@ -17,7 +17,7 @@ const tableMap: Record<ServiceCategory, string> = {
   "yag-havan": "yag_services",
   vivah: "vivah_services",
   muhurat: "muhurat_services",
-};
+} as const;
 
 export async function getServices(category: ServiceCategory) {
   const supabase = await createClient();
@@ -31,7 +31,7 @@ export async function getServices(category: ServiceCategory) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error(`Failed to load ${category} services:`, error);
+    console.error("Error loading services:", error);
     return [];
   }
 
@@ -54,7 +54,7 @@ export async function getServiceById(
     .maybeSingle();
 
   if (error) {
-    console.error(`Failed to load service ${id}:`, error);
+    console.error("Error loading service:", error);
     return null;
   }
 
