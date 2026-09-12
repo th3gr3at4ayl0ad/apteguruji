@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #fff9f0;
+  --ivory: #fffcf7;
+  --saffron: #d97706;
+  --maroon: #7f1d1d;
+  --brown: #451a03;
+  --gold: #b8860b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--ivory);
+  color: var(--brown);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: var(--saffron);
+  color: white;
+}
+
+.container-custom {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.section-padding {
+  padding: 80px 0;
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 56px 0;
+  }
+}
+
+.gold-line {
+  width: 70px;
+  height: 3px;
+  background: var(--gold);
+  margin: 14px auto 24px;
+  border-radius: 999px;
+}
+
+.spiritual-card {
+  border: 1px solid rgba(184, 134, 11, 0.18);
+  background: rgba(255, 252, 247, 0.9);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(120, 53, 15, 0.06);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.spiritual-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 50px rgba(120, 53, 15, 0.12);
+}
+
+.hero-pattern {
+  background-image:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(217, 119, 6, 0.08) 0,
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(127, 29, 29, 0.06) 0,
+      transparent 30%
+    );
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(217, 119, 6, 0.4);
+  outline-offset: 3px;
+}
