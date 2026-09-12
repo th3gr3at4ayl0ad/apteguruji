@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import Link from "next/link";
 
 interface ServiceCardProps {
   title: string;
@@ -14,7 +15,7 @@ export default function ServiceCard({
   href,
 }: ServiceCardProps) {
   return (
-    <a
+    <Link
       href={href}
       className="spiritual-card group block p-6"
     >
@@ -33,6 +34,6 @@ export default function ServiceCard({
       <div className="mt-5 text-sm font-semibold text-amber-700">
         अधिक माहिती →
       </div>
-    </a>
+    </Link>
   );
 }
